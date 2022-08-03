@@ -1,13 +1,13 @@
 package main
 
-import "log"
+import (
+	"github.com/jalamar/clone-twitter/bd"
 
-import(
-	"github.com/jaam7/clone-twitter/bd"
+	"log"
 )
 
 func main() {
-	if bd.checkConnection() == false {
+	if !bd.CheckConnection() {
 		log.Fatal("impossible connect to DB")
 	}
 }
