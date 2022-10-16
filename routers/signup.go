@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -10,38 +11,53 @@ import (
 )
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	var t models.Usuario
+	var t models.User
 
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&t); err != nil {
-		http.Error(w, "error in request", http.StatusBadRequest)
-	}
-
-	if len(t.Email) == 0 {
-		http.Error(w, "email is required", http.StatusUnprocessableEntity)
-	}
-
-	if isValidEmail(t.Email) {
+		JSONError(w, "error in request", http.StatusBadRequest)
 		return
 	}
 
+	log.Println(t)
+
+	if len(t.Email) == 0 {
+		JSONError(w, "email is required", http.StatusUnprocessableEntity)
+		return
+	}
+
+	if len(t.Password) == 0 {
+		JSONError(w, "password is required", http.StatusUnprocessableEntity)
+		return
+	}
+
+	if !isValidEmail(t.Email) {
+		JSONError(w, "email is invalid", http.StatusUnprocessableEntity)
+		return
+	}
+
+	log.Println(isValidEmail(t.Email))
+
 	if len(t.Password) < 6 {
-		http.Error(w, "password must be greather than 6 characters", http.StatusUnprocessableEntity)
+		JSONError(w, "password must be greather than 6 characters", http.StatusUnprocessableEntity)
+		return
 	}
 
 	_, isFounded, _ := bd.CheckAvailabilityEmail(t.Email)
+	log.Println(isFounded)
+
 	if isFounded {
-		http.Error(w, "email already exists", http.StatusBadRequest)
+		JSONError(w, "email already exists", http.StatusConflict)
 		return
 	}
 
 	_, isInserted, err := bd.InsertUser(t)
 	if err != nil {
-		http.Error(w, "email already exists", http.StatusBadRequest)
+		http.Error(w, "error with DB", http.StatusBadRequest)
 		return
 	}
 
-	if isInserted {
+	if !isInserted {
 		http.Error(w, "error while insert user", http.StatusBadRequest)
 		return
 	}

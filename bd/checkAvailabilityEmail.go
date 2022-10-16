@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func CheckAvailabilityEmail(email string) (models.Usuario, bool, string) {
+func CheckAvailabilityEmail(email string) (models.User, bool, string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -17,13 +17,14 @@ func CheckAvailabilityEmail(email string) (models.Usuario, bool, string) {
 
 	condition := bson.M{"email": email}
 
-	var user models.Usuario
+	var user models.User
 	err := collection.FindOne(ctx, condition).Decode(&user)
+
 	ID := user.ID.Hex()
 
 	if err != nil {
 		return user, false, ID
 	}
-	
+
 	return user, true, ID
 }

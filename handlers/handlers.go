@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/jalamar/clone-twitter/middleware"
 	"github.com/jalamar/clone-twitter/routers"
-	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
