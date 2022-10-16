@@ -26,9 +26,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userLogin, exists := bd.Login(user.Email, user.Password)
-	if !exists {
-		JSONError(w, "usuario doesnt exists", http.StatusNotFound)
+	userLogin, err := bd.Login(user.Email, user.Password)
+	if err != nil {
+		JSONError(w, err, http.StatusNotFound)
+		return
 	}
 
 	jwtKey, err := jwt.GenerateJWT(userLogin)

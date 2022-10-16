@@ -2,6 +2,7 @@ package routers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -11,12 +12,12 @@ func JSONError(w http.ResponseWriter, err interface{}, code int) {
 	w.WriteHeader(code)
 	messageResponse := Response{
 		StatusCode: code,
-		Msg:        err,
+		Message:    fmt.Sprintf("%v", err),
 	}
 	json.NewEncoder(w).Encode(messageResponse)
 }
 
 type Response struct {
-	StatusCode int
-	Msg        interface{}
+	StatusCode int    `json:"status_code"`
+	Message    string `json:"message"`
 }
