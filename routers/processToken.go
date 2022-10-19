@@ -26,7 +26,7 @@ func ProcessToken(token string) (*models.Claim, bool, string, error) {
 		return myKey, nil
 	})
 	if err != nil {
-		return claims, false, string(""), nil
+		return claims, false, string(""), err
 	}
 
 	_, finded, _ := bd.CheckAvailabilityEmail(claims.Email)

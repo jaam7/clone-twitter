@@ -16,11 +16,11 @@ func SeeProfile(w http.ResponseWriter, r *http.Request) {
 
 	profile, err := bd.FindProfile(ID)
 	if err != nil {
-		JSONError(w, "error trying find profile"+err.Error(), http.StatusBadRequest)
+		JSONError(w, "error trying find profile "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("context-type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(profile)
 }

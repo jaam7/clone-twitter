@@ -2,6 +2,7 @@ package bd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func FindProfile(ID string) (models.User, error){
+func FindProfile(ID string) (models.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -25,11 +26,12 @@ func FindProfile(ID string) (models.User, error){
 	}
 
 	err := collection.FindOne(ctx, condicion).Decode(&profile)
-	profile.Password = ""
 	if err != nil {
-		fmt.Println("Register not found"+ err.Error())
-		return profile, nil
+		fmt.Println("Register not found" + err.Error())
+		return profile, errors.New("Register not found" + err.Error())
 	}
+
+	profile.Password = ""
 
 	return profile, nil
 }
